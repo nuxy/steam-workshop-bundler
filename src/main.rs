@@ -42,7 +42,7 @@ fn main() {
  * Check OS-specific dependencies.
  */
 fn check_deps() {
-    let file_ext: &str = if env::consts::OS == "windows" {
+    let file_ext = if env::consts::OS == "windows" {
         ".exe"
     } else {
         ""
@@ -51,10 +51,10 @@ fn check_deps() {
     let file_names = &["steamcmd", "git", "7za"];
 
     for file_name in file_names {
-        let result: &str = which(file_name).unwrap().as_path().display().to_string();
+        let result = which(file_name).unwrap().as_path().display().to_string();
 
         if result == "" {
-            println!("{file_name}{file_ext} is not installed. Exiting.");
+            println!("{}{} is not installed. Exiting.", file_name, file_ext);
             process::exit(1);
         }
     }
