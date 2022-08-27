@@ -1,0 +1,13 @@
+[package]
+name = "steam-workshop-bundler"
+version = "0.0.1"
+description = "Manage multiple Steam mod workshops for a single game instance."
+repository = "https://github.com/nuxy/steam-workshop-bundler"
+readme = "README.md"
+license = "MIT"
+categories = ["development-tools"]
+keywords = ["cli", "gamedev", "steam", "workshop"]
+edition = "2021"
+
+[dependencies]
+clap = { version = "3.2.17", features = ["derive"] }
