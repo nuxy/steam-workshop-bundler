@@ -1,10 +1,13 @@
 // Port of https://github.com/nuxy/MiscreatedMods-DOA/blob/master/publish.sh
 
 use std::env;
-use std::process;
+use std::fs;
+use std::path::Path;
+use std::process::{exit, Command};
 
 // Load cargo.
 use clap::{AppSettings, Parser};
+use uuid::Uuid;
 use which::which;
 
 const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
@@ -32,30 +35,84 @@ fn main() {
 
     let args = Cli::parse();
 
-    println!("Username: {:?}", args.username);
-    println!("Password: {:?}", args.password);
-    println!("Workshop: {:?}", args.workshop);
-    println!("Public:   {:?}", args.public);
+    pack_files(args.workshop);
 }
 
 /**
  * Check OS-specific dependencies.
  */
 fn check_deps() {
-    let file_ext = if env::consts::OS == "windows" {
-        ".exe"
+    let file_names = &["steamcmd", "git", "7za"];
+
+    for file_name in file_names {
+        let result = get_bin_path(file_name);
+
+        if result == "" {
+            println!("{}{} is not installed. Exiting.", file_name, get_bin_ext());
+            exit(1);
+        }
+    }
+}
+
+/**
+ * Create archive of project files.
+ */
+fn pack_files(workshop: String) {
+    let cwd = env::current_dir().unwrap().as_path().display().to_string();
+    let tmp = env::temp_dir().display().to_string();
+
+    let proj_path = if cwd != "" && workshop != "" {
+        "{cwd}/Workshop/{workshop}"
     } else {
         ""
     };
 
-    let file_names = &["steamcmd", "git", "7za"];
+    if proj_path != "" && Path::new(proj_path).is_dir() {
+        let cmd = format!("{}{}", get_bin_path("7za"), get_bin_ext());
 
-    for file_name in file_names {
-        let result = which(file_name).unwrap().as_path().display().to_string();
+        // Create build directory..
+        let build_uuid = Uuid::new_v4().to_string();
+        let build_path = if build_uuid != "" && tmp != "" {
+            "{tmp}/{build_uuid}"
+        } else {
+            "{proj_path}/tmp"
+        };
 
-        if result == "" {
-            println!("{}{} is not installed. Exiting.", file_name, file_ext);
-            process::exit(1);
-        }
+        fs::create_dir(build_path).unwrap();
+
+        // .. then 7za archive.
+        Command::new(cmd)
+            .args(&[
+                "a",
+                "-tzip",
+                "-mx0",
+                "{build_path}/{workshop}.pak",
+                "@\"{proj_path}/MANIFEST\"",
+                "LICENSE",
+                "VERSION",
+            ])
+            .output()
+            .expect("failed to execute process");
+    } else {
+        println!("Workshop \"{}\" not found. Exiting.", workshop);
+        exit(1);
     }
+}
+
+/**
+ * Return OS-supported binary entension.
+ */
+fn get_bin_ext() -> &'static str {
+    return if env::consts::OS == "windows" {
+        ".exe"
+    } else {
+        ""
+    };
+}
+
+/**
+ * Return OS-supported binary path.
+ */
+fn get_bin_path(file_name: &str) -> String {
+    return which(file_name).unwrap().as_path().display().to_string();
 }
