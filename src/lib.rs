@@ -24,17 +24,14 @@ pub fn check_deps(file_names: &[&str]) {
  * Create archive, project sources.
  */
 pub fn create_bundle(workshop: String, public: bool) {
-    let cwd = env::current_dir().unwrap().display().to_string();
-    let tmp = env::temp_dir().display().to_string();
-
-    let proj_path = format!("{}/Workshop/{}", cwd, workshop);
+    let proj_path = format!("{}/Workshop/{}", get_cwd_path(), workshop);
 
     if Path::new(&proj_path).is_dir() {
         let cmd = format!("{}{}", get_bin_path("7za"), get_bin_ext());
 
         // Create build directory..
         let build_uuid = Uuid::new_v4().to_string();
-        let build_path = format!("{}/{}", tmp, build_uuid);
+        let build_path = format!("{}/{}", get_tmp_path(), build_uuid);
 
         fs::create_dir(build_path).unwrap_or_else(|error| {
             panic!("Failed to create directory: {:?}", error);
@@ -62,16 +59,30 @@ pub fn create_bundle(workshop: String, public: bool) {
  * Return OS-supported binary entension.
  */
 fn get_bin_ext() -> &'static str {
-    return if env::consts::OS == "windows" {
+    if env::consts::OS == "windows" {
         ".exe"
     } else {
         ""
-    };
+    }
 }
 
 /**
  * Return OS-supported binary path.
  */
 fn get_bin_path(file_name: &str) -> String {
-    return which(file_name).unwrap().display().to_string();
+    which(file_name).unwrap().display().to_string()
+}
+
+/**
+ * Return path to current directory.
+ */
+fn get_cwd_path() -> String {
+    env::current_dir().unwrap().display().to_string()
+}
+
+/**
+ * Return path to OS temp directory.
+ */
+fn get_tmp_path() -> String {
+    env::temp_dir().display().to_string()
 }
