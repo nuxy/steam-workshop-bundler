@@ -60,24 +60,18 @@ fn pack_files(workshop: String) {
     let cwd = env::current_dir().unwrap().display().to_string();
     let tmp = env::temp_dir().display().to_string();
 
-    let proj_path = if cwd != "" && workshop != "" {
-        "{cwd}/Workshop/{workshop}"
-    } else {
-        ""
-    };
+    let proj_path = format!("{}/Workshop/{}", cwd, workshop);
 
-    if proj_path != "" && Path::new(proj_path).is_dir() {
+    if Path::new(&proj_path).is_dir() {
         let cmd = format!("{}{}", get_bin_path("7za"), get_bin_ext());
 
         // Create build directory..
         let build_uuid = Uuid::new_v4().to_string();
-        let build_path = if build_uuid != "" && tmp != "" {
-            "{tmp}/{build_uuid}"
-        } else {
-            "{proj_path}/tmp"
-        };
+        let build_path = format!("{}/{}", tmp, build_uuid);
 
-        fs::create_dir(build_path).unwrap();
+        fs::create_dir(build_path).unwrap_or_else(|error| {
+            panic!("Failed to create directory: {:?}", error);
+        });
 
         // .. then 7za archive.
         Command::new(cmd)
