@@ -3,7 +3,7 @@
 use std::env;
 use std::fs;
 use std::path::Path;
-use std::process::{exit, Command};
+use std::process::{Command};
 
 // Load cargo.
 use clap::{AppSettings, Parser};
@@ -48,8 +48,7 @@ fn check_deps() {
         let result = get_bin_path(file_name);
 
         if result == "" {
-            println!("{}{} is not installed. Exiting.", file_name, get_bin_ext());
-            exit(1);
+            panic!("{}{} is not installed. Exiting.", file_name, get_bin_ext());
         }
     }
 }
@@ -94,8 +93,7 @@ fn pack_files(workshop: String) {
             .output()
             .expect("failed to execute process");
     } else {
-        println!("Workshop \"{}\" not found. Exiting.", workshop);
-        exit(1);
+        panic!("Workshop \"{}\" not found. Exiting.", workshop);
     }
 }
 
