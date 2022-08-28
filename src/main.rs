@@ -31,7 +31,7 @@ struct Cli {
 }
 
 fn main() {
-    check_deps();
+    check_deps(&["steamcmd", "git", "7za"]);
 
     let args = Cli::parse();
 
@@ -41,9 +41,7 @@ fn main() {
 /**
  * Check OS-specific dependencies.
  */
-fn check_deps() {
-    let file_names = &["steamcmd", "git", "7za"];
-
+fn check_deps(file_names: &[&str]) {
     for file_name in file_names {
         let result = get_bin_path(file_name);
 
