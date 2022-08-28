@@ -6,7 +6,7 @@ use std::env;
 use clap::{AppSettings, Parser};
 
 // Common lib.
-use steam_workshop_bundler::{check_deps, pack_files};
+use steam_workshop_bundler::{check_deps, create_bundle};
 
 const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 
@@ -36,5 +36,5 @@ fn main() {
 
     let args = Cli::parse();
 
-    pack_files(args.workshop);
+    create_bundle(args.workshop, args.public);
 }

@@ -21,9 +21,9 @@ pub fn check_deps(file_names: &[&str]) {
 }
 
 /**
- * Create archive of project files.
+ * Create archive, project sources.
  */
-pub fn pack_files(workshop: String) {
+pub fn create_bundle(workshop: String, public: bool) {
     let cwd = env::current_dir().unwrap().display().to_string();
     let tmp = env::temp_dir().display().to_string();
 
