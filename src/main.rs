@@ -3,7 +3,7 @@
 use std::env;
 use std::fs;
 use std::path::Path;
-use std::process::{Command};
+use std::process::Command;
 
 // Load cargo.
 use clap::{AppSettings, Parser};
@@ -57,7 +57,7 @@ fn check_deps() {
  * Create archive of project files.
  */
 fn pack_files(workshop: String) {
-    let cwd = env::current_dir().unwrap().as_path().display().to_string();
+    let cwd = env::current_dir().unwrap().display().to_string();
     let tmp = env::temp_dir().display().to_string();
 
     let proj_path = if cwd != "" && workshop != "" {
@@ -112,5 +112,5 @@ fn get_bin_ext() -> &'static str {
  * Return OS-supported binary path.
  */
 fn get_bin_path(file_name: &str) -> String {
-    return which(file_name).unwrap().as_path().display().to_string();
+    return which(file_name).unwrap().display().to_string();
 }
