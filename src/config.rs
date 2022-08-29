@@ -1,10 +1,11 @@
 use std::fs;
+use std::fs::File;
 
 // Load cargo.
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_xml_rs::{from_str, to_string};
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 struct ConfigData {
     appid: String,
     title: String,
@@ -50,6 +51,20 @@ impl Config {
             "fileid" => return self.data.fileid.clone(),
             _ => panic!("Config parameter {} not found", name),
         };
+    }
+
+    /**
+     * Output XML config, empty values if new.
+     */
+    pub fn output_file(&self, path: &str) {
+        let values = to_string(&self.data).unwrap();
+
+        // Output XML format.
+        let content = r#"<config>{values}</config>"#;
+
+        let file = File::create(&path).expect("Failed to create XML");
+
+        fs::write(path, content).expect("Failed to write XML data");
     }
 
     /**
