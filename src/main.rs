@@ -36,5 +36,5 @@ fn main() {
 
     let args = Cli::parse();
 
-    create_bundle(args.workshop, args.public);
+    create_bundle(&args.workshop, args.public);
 }

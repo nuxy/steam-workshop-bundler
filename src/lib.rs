@@ -23,7 +23,7 @@ pub fn check_deps(file_names: &[&str]) {
 /**
  * Create archive, project sources.
  */
-pub fn create_bundle(workshop: String, public: bool) {
+pub fn create_bundle(workshop: &str, public: bool) {
     let proj_path = format!("{}/Workshop/{}", get_cwd_path(), workshop);
 
     if Path::new(&proj_path).is_dir() {
