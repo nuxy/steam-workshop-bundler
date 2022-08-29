@@ -1,5 +1,4 @@
 use std::fs;
-use std::io::Read;
 
 // Load cargo.
 use serde::Deserialize;
@@ -49,7 +48,7 @@ impl Config {
             "changenote" => return self.data.changenote.clone(),
             "tags" => return self.data.tags.clone(),
             "fileid" => return self.data.fileid.clone(),
-            _ => panic!("Config paramater {} not found", name),
+            _ => panic!("Config parameter {} not found", name),
         };
     }
 
@@ -67,12 +66,9 @@ impl Config {
      *   </config>
      */
     fn load_file(path: &str) -> ConfigData {
-        let mut file = fs::File::open(path).unwrap();
-        let mut text = String::new();
+        let text = fs::read_to_string(path).expect("Failed to read file");
 
-        file.read_to_string(&mut text).unwrap();
-
-        let data: ConfigData = from_str(&text).unwrap();
+        let data: ConfigData = from_str(&text).expect("Invalid XML format");
         data
     }
 }

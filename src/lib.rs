@@ -33,9 +33,7 @@ pub fn create_bundle(workshop: &str, public: bool) {
         let build_uuid = Uuid::new_v4().to_string();
         let build_path = format!("{}/{}", get_tmp_path(), build_uuid);
 
-        fs::create_dir(build_path).unwrap_or_else(|error| {
-            panic!("Failed to create directory: {:?}", error);
-        });
+        fs::create_dir(build_path).expect("Failed to create directory");
 
         // .. then 7za archive.
         Command::new(cmd)
@@ -49,7 +47,7 @@ pub fn create_bundle(workshop: &str, public: bool) {
                 "VERSION",
             ])
             .output()
-            .expect("failed to execute process");
+            .expect("Failed to execute process");
     } else {
         panic!("Workshop \"{}\" not found. Exiting.", workshop);
     }
