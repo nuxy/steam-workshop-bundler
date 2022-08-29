@@ -1,11 +1,18 @@
+#![allow(unused_variables)]
+
 use std::env;
 use std::fs;
+use std::fs::File;
 use std::path::Path;
 use std::process::Command;
 
 // Load cargo.
 use uuid::Uuid;
 use which::which;
+
+// Config mod.
+mod config;
+use config::Config;
 
 /**
  * Check OS-specific dependencies.
@@ -27,16 +34,16 @@ pub fn create_bundle(workshop: &str, public: bool) {
     let proj_path = format!("{}/Workshop/{}", get_cwd_path(), workshop);
 
     if Path::new(&proj_path).is_dir() {
-        let cmd = format!("{}{}", get_bin_path("7za"), get_bin_ext());
+        let cmd_bin = format!("{}{}", get_bin_path("7za"), get_bin_ext());
 
-        // Create build directory..
+        // Create build directory.
         let build_uuid = Uuid::new_v4().to_string();
         let build_path = format!("{}/{}", get_tmp_path(), build_uuid);
 
-        fs::create_dir(build_path).expect("Failed to create directory");
+        fs::create_dir(&build_path).expect("Failed to create directory");
 
-        // .. then 7za archive.
-        Command::new(cmd)
+        // .. 7za archive.
+        Command::new(cmd_bin)
             .args(&[
                 "a",
                 "-tzip",
@@ -48,9 +55,52 @@ pub fn create_bundle(workshop: &str, public: bool) {
             ])
             .output()
             .expect("Failed to execute process");
+
+        // .. dependencies.
+        create_vdf(&build_path, &proj_path, public);
     } else {
         panic!("Workshop \"{}\" not found. Exiting.", workshop);
     }
+}
+
+/**
+ * Create Steam workshop VDF reference.
+ */
+fn create_vdf(build_dir: &str, proj_path: &str, public: bool) {
+    let xml_path = format!("{}/config.xml", get_cwd_path());
+    let vdf_path = format!("{}/mod.vdf", get_tmp_path());
+
+    // Load config values.
+    let config = Config::new(&xml_path);
+
+    let appid = config.get_value("appid");
+    let name = config.get_value("name");
+    let description = config.get_value("description");
+    let changenote = config.get_value("changenote");
+    let tags = config.get_value("tags");
+    let fileid = config.get_value("fileid");
+
+    let visible = if public { "0" } else { "3" };
+
+    // Output VDF format.
+    let content = r#"
+"workshopitem"
+{
+    "appid"           "{appid}"
+    "contentfolder"   "{build_dir}"
+    "previewfile"     "{proj_path}/preview.png"
+    "visibility"      "{visible}"
+    "title"           "{title}"
+    "description"     "{description}"
+    "changenote"      "{changenote}"
+    "tags"            "{tags}"
+    "publishedfileid" "{fileid}"
+}
+"#;
+
+    let file = File::create(&vdf_path).expect("Failed to create VDF");
+
+    fs::write(vdf_path, content).expect("Failed to write VDF data");
 }
 
 /**
