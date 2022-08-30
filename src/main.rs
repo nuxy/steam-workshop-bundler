@@ -32,7 +32,7 @@ struct Cli {
  * Let's get this party started.
  */
 fn main() {
-    check_deps(&["steamcmd", "git", "7za"]);
+    check_deps(&["steamcmd", "7za"]);
 
     let args = Cli::parse();
 
