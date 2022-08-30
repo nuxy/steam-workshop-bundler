@@ -30,7 +30,7 @@ pub fn check_deps(file_names: &[&str]) {
 /**
  * Create archive, project sources.
  */
-pub fn create_bundle(workshop: &str, public: bool) {
+pub fn create_bundle(workshop: &str, public: bool) -> String {
     let proj_path = format!("{}/Workshop/{}", get_cwd_path(), workshop);
 
     if Path::new(&proj_path).is_dir() {
@@ -50,17 +50,19 @@ pub fn create_bundle(workshop: &str, public: bool) {
                 "-mx0",
                 "{build_path}/{workshop}.pak",
                 "@\"{proj_path}/MANIFEST\"",
-                "LICENSE",
-                "VERSION",
+                "{proj_path}/LICENSE",
+                "{proj_path}/VERSION",
             ])
             .output()
             .expect("Failed to execute process");
 
         // .. dependencies.
         create_vdf(&build_path, &proj_path, public);
-    } else {
-        panic!("Workshop \"{}\" not found. Exiting.", workshop);
+
+        return build_path;
     }
+
+    panic!("Workshop \"{}\" not found. Exiting.", workshop);
 }
 
 /**
