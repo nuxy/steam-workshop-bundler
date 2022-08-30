@@ -66,9 +66,37 @@ pub fn create_bundle(workshop: &str, public: bool) -> String {
 }
 
 /**
+ * Upload package sources using SteamCMD.
+ */
+pub fn publish(build_path: &str, username: &str, password: &str) -> bool {
+    if Path::new(&build_path).is_dir() {
+        let cmd_bin = format!("{}{}", get_bin_path("steamcmd"), get_bin_ext());
+
+        Command::new(cmd_bin)
+            .args(&[
+                "+login",
+                "{username}",
+                "{password}",
+                "+workshop_build_item",
+                "{build_path}/mod.vcf",
+                "+quit",
+            ])
+            .output()
+            .expect("Failed to execute process");
+
+        // Cleanup build sources.
+        fs::remove_dir_all(build_path).expect("Failed to remove directory");
+
+        return true;
+    }
+
+    panic!("Build directory \"{}\" not found. Exiting.", build_path);
+}
+
+/**
  * Create Steam workshop VDF reference.
  */
-fn create_vdf(build_dir: &str, proj_path: &str, public: bool) {
+fn create_vdf(build_path: &str, proj_path: &str, public: bool) {
     let xml_path = format!("{}/config.xml", get_cwd_path());
     let vdf_path = format!("{}/mod.vdf", get_tmp_path());
 
@@ -89,7 +117,7 @@ fn create_vdf(build_dir: &str, proj_path: &str, public: bool) {
 "workshopitem"
 {
     "appid"           "{appid}"
-    "contentfolder"   "{build_dir}"
+    "contentfolder"   "{build_path}"
     "previewfile"     "{proj_path}/preview.png"
     "visibility"      "{visible}"
     "title"           "{title}"
