@@ -148,7 +148,9 @@ fn get_bin_ext() -> &'static str {
  * Return OS-supported binary path.
  */
 fn get_bin_path(file_name: &str) -> String {
-    which(file_name).unwrap().display().to_string()
+    let file = format!("{}{}", file_name, get_bin_ext());
+
+    which(file).unwrap().display().to_string()
 }
 
 /**
