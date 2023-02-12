@@ -2,6 +2,6 @@
   "name": "steam-workshop-bundler",
   "image": "marcsbrooks/docker-steamcmd-wine",
   "forwardPorts": [],
-  "postCreateCommand": "apt -y update && apt -y install curl gcc",
-  "postStartCommand": "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
+  "postCreateCommand": "${containerWorkspaceFolder}/.devcontainer/create.sh",
+  "postStartCommand": "sleep infinity"
 }
