@@ -1,0 +1,5 @@
+{
+  "name": "steam-workshop-bundler",
+  "image": "rust",
+  "forwardPorts": []
+}

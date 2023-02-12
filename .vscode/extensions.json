@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "christian-kohler.path-intellisense",
+    "DavidAnson.vscode-markdownlint",
+    "donjayamanne.githistory",
+    "ms-vscode-remote.remote-containers",
+    "panicbit.cargo",
+    "rust-lang.rust-analyzer",
+    "steoates.autoimport",
+    "searKing.preview-vscode",
+    "tamasfe.even-better-toml"
+  ]
+}
