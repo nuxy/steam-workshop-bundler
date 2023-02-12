@@ -1,5 +1,7 @@
 {
   "name": "steam-workshop-bundler",
-  "image": "rust",
-  "forwardPorts": []
+  "image": "marcsbrooks/docker-steamcmd-wine",
+  "forwardPorts": [],
+  "postCreateCommand": "apt -y update && apt -y install curl",
+  "postStartCommand": "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
 }
