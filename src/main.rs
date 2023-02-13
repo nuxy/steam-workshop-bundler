@@ -12,6 +12,7 @@ const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about = DESCRIPTION, long_about = None)]
+#[clap(global_setting(AppSettings::ArgRequiredElseHelp))]
 #[clap(global_setting(AppSettings::DeriveDisplayOrder))]
 
 struct Cli {
