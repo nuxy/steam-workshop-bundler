@@ -2,7 +2,6 @@
 
 use std::env;
 use std::fs;
-use std::fs::File;
 use std::path::Path;
 use std::process::Command;
 
@@ -97,11 +96,11 @@ pub fn publish(build_path: &str, username: &str, password: &str) -> bool {
  * Create Steam workshop VDF reference.
  */
 fn create_vdf(build_path: &str, proj_path: &str, public: bool) {
-    let xml_path = format!("{}/config.xml", get_cwd_path());
+    let xml_file = format!("{}/config.xml", get_cwd_path());
     let vdf_path = format!("{}/mod.vdf", get_tmp_path());
 
-    // Load config values.
-    let config = Config::new(&xml_path);
+    // Load config values from XML.
+    let config = Config::new(&xml_file);
 
     let appid = config.get_value("appid");
     let name = config.get_value("name");
@@ -127,8 +126,6 @@ fn create_vdf(build_path: &str, proj_path: &str, public: bool) {
     "publishedfileid" "{fileid}"
 }
 "#;
-
-    let file = File::create(&vdf_path).expect("Failed to create VDF");
 
     fs::write(vdf_path, content).expect("Failed to write VDF data");
 }
