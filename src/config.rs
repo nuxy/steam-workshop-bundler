@@ -1,5 +1,4 @@
 use std::fs;
-use std::fs::File;
 use std::path::Path;
 
 // Load cargo.
@@ -64,21 +63,19 @@ impl Config {
     }
 
     /**
-     * Output XML config, empty values if new.
+     * Write config file, empty values if new.
      */
-    pub fn output_file(&self, path: &str) {
+    pub fn output_file(&self, file: &str) {
         let values = to_string(&self.data).unwrap();
 
         // Output XML format.
         let content = r#"<config>{values}</config>"#;
 
-        let file = File::create(&path).expect("Failed to create XML");
-
-        fs::write(path, content).expect("Failed to write XML data");
+        fs::write(file, content).expect("Failed to write XML data");
     }
 
     /**
-     * Load XML file into ConfigData struct.
+     * Load XML data into ConfigData struct.
      *
      * Supported format:
      *   <config>
@@ -90,8 +87,8 @@ impl Config {
      *       <fileid />
      *   </config>
      */
-    fn load_file(path: &str) -> ConfigData {
-        let text = fs::read_to_string(path).expect("Failed to read file");
+    fn load_data(file: &str) -> ConfigData {
+        let text = fs::read_to_string(file).expect("Failed to read file");
 
         let data: ConfigData = from_str(&text).expect("Invalid XML format");
         data
