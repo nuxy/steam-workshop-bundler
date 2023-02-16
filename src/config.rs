@@ -1,11 +1,12 @@
 use std::fs;
 use std::fs::File;
+use std::path::Path;
 
 // Load cargo.
 use serde::{Deserialize, Serialize};
 use serde_xml_rs::{from_str, to_string};
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Default)]
 struct ConfigData {
     appid: String,
     title: String,
@@ -17,24 +18,33 @@ struct ConfigData {
 
 pub struct Config {
     data: ConfigData,
+    file: String,
 }
 
 impl Config {
     /**
      * Instanciate new Config instance.
      */
-    pub fn new(path: &str) -> Config {
-        let data: ConfigData = Self::load_file(path);
+    pub fn new(file: &str) -> Self {
+        if Path::new(&file).exists() {
+            let data: ConfigData = Self::load_data(&file);
 
-        Config {
-            data: ConfigData {
-                appid: data.appid,
-                title: data.title,
-                description: data.description,
-                changenote: data.changenote,
-                tags: data.tags,
-                fileid: data.fileid,
-            },
+            Self {
+                data: ConfigData {
+                    appid: data.appid,
+                    title: data.title,
+                    description: data.description,
+                    changenote: data.changenote,
+                    tags: data.tags,
+                    fileid: data.fileid,
+                },
+                file: file.to_string(),
+            }
+        } else {
+            Self {
+                data: ConfigData::default(),
+                file: file.to_string(),
+            }
         }
     }
 
