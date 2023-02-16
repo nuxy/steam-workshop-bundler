@@ -47,10 +47,10 @@ pub fn create_bundle(workshop: &str, public: &bool) -> String {
                 "a",
                 "-tzip",
                 "-mx0",
-                "{build_path}/{workshop}.pak",
-                "@\"{proj_path}/MANIFEST\"",
-                "{proj_path}/LICENSE",
-                "{proj_path}/VERSION",
+                &(format!("{}/{}.pak", build_path, workshop)),
+                &(format!("@\"{}/MANIFEST\"", proj_path)),
+                &(format!("{}/LICENSE", proj_path)),
+                &(format!("{}/VERSION", proj_path)),
             ])
             .output()
             .expect("Failed to execute process");
@@ -74,10 +74,10 @@ pub fn publish(build_path: &str, username: &str, password: &str) -> bool {
         Command::new(cmd_bin)
             .args(&[
                 "+login",
-                "{username}",
-                "{password}",
+                &(format!("'{}'", username)),
+                &(format!("'{}'", password)),
                 "+workshop_build_item",
-                "{build_path}/mod.vcf",
+                &(format!("{}/mod.vcf", build_path)),
                 "+quit",
             ])
             .output()
@@ -103,7 +103,7 @@ fn create_vdf(build_path: &str, proj_path: &str, public: &bool) {
     let config = Config::new(&xml_file);
 
     let appid = config.get_value("appid");
-    let name = config.get_value("name");
+    let title = config.get_value("title");
     let description = config.get_value("description");
     let changenote = config.get_value("changenote");
     let tags = config.get_value("tags");
@@ -112,20 +112,20 @@ fn create_vdf(build_path: &str, proj_path: &str, public: &bool) {
     let visible = if *public { "0" } else { "3" };
 
     // Output VDF format.
-    let content = r#"
-"workshopitem"
-{
-    "appid"           "{appid}"
-    "contentfolder"   "{build_path}"
-    "previewfile"     "{proj_path}/preview.png"
-    "visibility"      "{visible}"
-    "title"           "{title}"
-    "description"     "{description}"
-    "changenote"      "{changenote}"
-    "tags"            "{tags}"
-    "publishedfileid" "{fileid}"
-}
-"#;
+    let content = format! {"
+\"workshopitem\"
+{{
+    \"appid\"           \"{appid}\"
+    \"contentfolder\"   \"{build_path}\"
+    \"previewfile\"     \"{proj_path}/preview.png\"
+    \"visibility\"      \"{visible}\"
+    \"title\"           \"{title}\"
+    \"description\"     \"{description}\"
+    \"changenote\"      \"{changenote}\"
+    \"tags\"            \"{tags}\"
+    \"publishedfileid\" \"{fileid}\"
+}}
+"};
 
     fs::write(vdf_path, content).expect("Failed to write VDF data");
 }
