@@ -3,7 +3,7 @@ use std::path::Path;
 
 // Load cargo.
 use serde::{Deserialize, Serialize};
-use serde_xml_rs::{from_str, to_string};
+use serde_xml_rs::from_str;
 
 #[derive(Deserialize, Serialize, Debug, Default)]
 struct ConfigData {
