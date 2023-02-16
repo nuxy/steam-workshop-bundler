@@ -65,13 +65,28 @@ impl Config {
     /**
      * Write config file, empty values if new.
      */
-    pub fn output_file(&self, file: &str) {
-        let values = to_string(&self.data).unwrap();
+    pub fn write_file(&self) {
+        // Get config values.
+        let appid = self.get_value("appid");
+        let title = self.get_value("title");
+        let description = self.get_value("description");
+        let changenote = self.get_value("changenote");
+        let tags = self.get_value("tags");
+        let fileid = self.get_value("fileid");
 
         // Output XML format.
-        let content = r#"<config>{values}</config>"#;
+        let content = format! {"
+<config>
+    <appid>{appid}</appid>
+    <title>{title}</title>
+    <description>{description}</description>
+    <changenote>{changenote}</changenote>
+    <tags>{tags}</tags>
+    <fileid>{fileid}</fileid>
+</config>
+"};
 
-        fs::write(file, content).expect("Failed to write XML data");
+        fs::write(&self.file, content).expect("Failed to write XML data");
     }
 
     /**
