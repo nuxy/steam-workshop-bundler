@@ -33,7 +33,7 @@ pub fn create_bundle(workshop: &str, public: &bool) -> String {
     let proj_path = format!("{}/Workshop/{}", get_cwd_path(), workshop);
 
     if Path::new(&proj_path).is_dir() {
-        let cmd_bin = format!("{}{}", get_bin_path("7za"), get_bin_ext());
+        let cmd_bin = get_bin_path("7za") + get_bin_ext();
 
         // Create build directory.
         let build_uuid = Uuid::new_v4().to_string();
@@ -69,7 +69,7 @@ pub fn create_bundle(workshop: &str, public: &bool) -> String {
  */
 pub fn publish(build_path: &str, username: &str, password: &str) -> bool {
     if Path::new(&build_path).is_dir() {
-        let cmd_bin = format!("{}{}", get_bin_path("steamcmd"), get_bin_ext());
+        let cmd_bin = get_bin_path("steamcmd") + get_bin_ext();
 
         Command::new(cmd_bin)
             .args(&[
@@ -145,7 +145,7 @@ fn get_bin_ext() -> &'static str {
  * Return OS-supported binary path.
  */
 fn get_bin_path(file_name: &str) -> String {
-    let file = format!("{}{}", file_name, get_bin_ext());
+    let file = file_name.to_string() + get_bin_ext();
 
     which(file).unwrap().display().to_string()
 }
