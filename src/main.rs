@@ -6,7 +6,7 @@ use std::env;
 use clap::{AppSettings, Parser};
 
 // Common lib.
-use steam_workshop_bundler::{check_deps, create_bundle, publish};
+use steam_workshop_bundler::{check_deps, create_bundle, create_workshop, publish};
 
 const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 
@@ -25,6 +25,9 @@ struct Cli {
     #[clap(long, value_parser, help = "Workshop name to publish.")]
     workshop: String,
 
+    #[clap(long, action, help = "Generate workshop sources.")]
+    generate: bool,
+
     #[clap(long, action, help = "Adds workshop to Steam results (optional).")]
     public: bool,
 }
@@ -37,11 +40,15 @@ fn main() {
 
     let args = Cli::parse();
 
+    if args.generate {
+        create_workshop(&args.workshop)
+    }
+
     let path = create_bundle(&args.workshop, &args.public);
 
-    if publish(&path, &args.username, &args.password) {
-        println!("Success");
-    } else {
-        println!("Failed to publish Steam workshop");
+    if !publish(&path, &args.username, &args.password) {
+        panic!("Failed to publish Steam workshop");
     }
+
+    println!("Success");
 }

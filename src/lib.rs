@@ -6,6 +6,7 @@ use std::path::Path;
 use std::process::Command;
 
 // Load cargo.
+use image::RgbImage;
 use uuid::Uuid;
 use which::which;
 
@@ -62,6 +63,31 @@ pub fn create_bundle(workshop: &str, public: &bool) -> String {
     }
 
     panic!("Workshop \"{}\" not found. Exiting.", workshop);
+}
+
+/**
+ * Create workshop project sources.
+ */
+pub fn create_workshop(name: &str) {
+    let proj_path = format!("{}/Workshop/{}", get_cwd_path(), name);
+
+    fs::create_dir_all(&proj_path).expect("Failed to create directory");
+
+    let xml_file = format!("{}/config.xml", &proj_path);
+    let img_file = format!("{}/preview.png", &proj_path);
+    let man_file = format!("{}/MANIFEST", &proj_path);
+
+    // Write config values to XML.
+    let config = Config::new(&xml_file);
+    config.write_file();
+
+    // Generate preview image.
+    let image = RgbImage::new(635, 356);
+    image.save(&img_file).unwrap();
+
+    // Create empty manifest.
+    let man_file = format!("{}/MANIFEST", &proj_path);
+    fs::write(man_file, "").expect("Failed to create file");
 }
 
 /**
