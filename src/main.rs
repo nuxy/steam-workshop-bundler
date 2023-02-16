@@ -37,7 +37,7 @@ fn main() {
 
     let args = Cli::parse();
 
-    let path = create_bundle(&args.workshop, args.public);
+    let path = create_bundle(&args.workshop, &args.public);
 
     if publish(&path, &args.username, &args.password) {
         println!("Success");

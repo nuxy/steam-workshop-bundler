@@ -29,7 +29,7 @@ pub fn check_deps(file_names: &[&str]) {
 /**
  * Create archive, project sources.
  */
-pub fn create_bundle(workshop: &str, public: bool) -> String {
+pub fn create_bundle(workshop: &str, public: &bool) -> String {
     let proj_path = format!("{}/Workshop/{}", get_cwd_path(), workshop);
 
     if Path::new(&proj_path).is_dir() {
@@ -56,7 +56,7 @@ pub fn create_bundle(workshop: &str, public: bool) -> String {
             .expect("Failed to execute process");
 
         // .. dependencies.
-        create_vdf(&build_path, &proj_path, public);
+        create_vdf(&build_path, &proj_path, &public);
 
         return build_path;
     }
@@ -95,7 +95,7 @@ pub fn publish(build_path: &str, username: &str, password: &str) -> bool {
 /**
  * Create Steam workshop VDF reference.
  */
-fn create_vdf(build_path: &str, proj_path: &str, public: bool) {
+fn create_vdf(build_path: &str, proj_path: &str, public: &bool) {
     let xml_file = format!("{}/config.xml", get_cwd_path());
     let vdf_path = format!("{}/mod.vdf", get_tmp_path());
 
@@ -109,7 +109,7 @@ fn create_vdf(build_path: &str, proj_path: &str, public: bool) {
     let tags = config.get_value("tags");
     let fileid = config.get_value("fileid");
 
-    let visible = if public { "0" } else { "3" };
+    let visible = if *public { "0" } else { "3" };
 
     // Output VDF format.
     let content = r#"
