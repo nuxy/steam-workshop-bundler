@@ -32,7 +32,7 @@ pub fn check_deps(file_names: &[&str]) {
 }
 
 /**
- * Create archive, project sources.
+ * Create archive of project sources.
  */
 pub fn create_bundle(workshop: &str, public: &bool) -> String {
     let proj_path = format!("{}/Workshop/{}", get_cwd_path(), workshop);
@@ -70,7 +70,7 @@ pub fn create_bundle(workshop: &str, public: &bool) -> String {
 }
 
 /**
- * Create workshop project sources.
+ * Create workshop project source.
  */
 pub fn create_workshop(name: &str) {
     let proj_path = format!("{}/Workshop/{}", get_cwd_path(), name);
@@ -94,7 +94,7 @@ pub fn create_workshop(name: &str) {
 }
 
 /**
- * Upload package sources using SteamCMD.
+ * Upload project sources using SteamCMD.
  */
 pub fn publish(build_path: &str, username: &str, password: &str) -> bool {
     if Path::new(&build_path).is_dir() {
@@ -138,7 +138,7 @@ fn create_vdf(build_path: &str, proj_path: &str, public: &bool) {
     let tags = config.get_value("tags");
     let fileid = config.get_value("fileid");
 
-    let visible = if *public { "0" } else { "3" };
+    let visible = if *public { "0" } else { "3" }; // 0: private, 3: public
 
     // Output VDF format.
     let content = format! {"
