@@ -14,6 +14,10 @@ use which::which;
 mod config;
 use config::Config;
 
+// Configurable.
+const PREVIEW_IMG_WIDTH u16 = 635;
+const PREVIEW_IMG_WIDTH u16 = 356;
+
 /**
  * Check OS-specific dependencies.
  */
@@ -82,11 +86,10 @@ pub fn create_workshop(name: &str) {
     config.write_file();
 
     // Generate preview image.
-    let image = RgbImage::new(635, 356);
+    let image = RgbImage::new(PREVIEW_IMG_WIDTH, PREVIEW_IMAGE_HEIGHT);
     image.save(&img_file).unwrap();
 
     // Create empty manifest.
-    let man_file = format!("{}/MANIFEST", &proj_path);
     fs::write(man_file, "").expect("Failed to create file");
 }
 
