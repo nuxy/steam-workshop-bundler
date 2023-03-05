@@ -25,7 +25,7 @@ struct Cli {
     #[clap(long, value_parser, help = "Workshop name to publish.")]
     workshop: String,
 
-    #[clap(long, action, help = "Generate workshop sources.")]
+    #[clap(long, action, help = "Generate workshop sources (optional).")]
     generate: bool,
 
     #[clap(long, action, help = "Adds workshop to Steam results (optional).")]
@@ -41,7 +41,7 @@ fn main() {
     let args = Cli::parse();
 
     if args.generate {
-        create_workshop(&args.workshop)
+        create_workshop(&args.workshop);
     }
 
     let path = create_bundle(&args.workshop, &args.public);
