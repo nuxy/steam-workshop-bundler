@@ -16,7 +16,7 @@ use config::Config;
 
 // Configurable.
 const PREVIEW_IMG_HEIGHT: u32 = 356;
-const PREVIEW_IMG_WIDTH:  u32 = 635;
+const PREVIEW_IMG_WIDTH: u32 = 635;
 
 /**
  * Check OS-specific dependencies.
@@ -72,25 +72,31 @@ pub fn create_bundle(workshop: &str, public: &bool) -> String {
 /**
  * Create workshop project source.
  */
-pub fn create_workshop(name: &str) {
+pub fn create_workshop(name: &str) -> String {
     let proj_path = format!("{}/Workshop/{}", get_cwd_path(), name);
 
-    fs::create_dir_all(&proj_path).expect("Failed to create directory");
+    if !Path::new(&proj_path).exists() {
+        fs::create_dir_all(&proj_path).expect("Failed to create directory");
 
-    let xml_file = format!("{}/config.xml", &proj_path);
-    let img_file = format!("{}/preview.png", &proj_path);
-    let man_file = format!("{}/MANIFEST", &proj_path);
+        let xml_file = format!("{}/config.xml", &proj_path);
+        let img_file = format!("{}/preview.png", &proj_path);
+        let man_file = format!("{}/MANIFEST", &proj_path);
 
-    // Write config values to XML.
-    let config = Config::new(&xml_file);
-    config.write_file();
+        // Write config values to XML.
+        let config = Config::new(&xml_file);
+        config.write_file();
 
-    // Generate preview image.
-    let image = RgbImage::new(PREVIEW_IMG_WIDTH, PREVIEW_IMG_HEIGHT);
-    image.save(&img_file).unwrap();
+        // Generate preview image.
+        let image = RgbImage::new(PREVIEW_IMG_WIDTH, PREVIEW_IMG_HEIGHT);
+        image.save(&img_file).unwrap();
 
-    // Create empty manifest.
-    fs::write(man_file, "").expect("Failed to create file");
+        // Create empty manifest.
+        fs::write(man_file, "").expect("Failed to create file");
+
+        return proj_path;
+    }
+
+    panic!("Existing workshop \"{}\" found. Exiting.", name);
 }
 
 /**
