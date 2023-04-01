@@ -53,7 +53,7 @@ pub fn create_bundle(workshop: &str, public: &bool) -> String {
                 "-tzip",
                 "-mx0",
                 &(format!("{}/{}.pak", build_path, workshop)),
-                &(format!("@\"{}/MANIFEST\"", proj_path)),
+                &(format!("@{}/MANIFEST", proj_path)),
                 &(format!("{}/LICENSE", proj_path)),
                 &(format!("{}/VERSION", proj_path)),
             ])
