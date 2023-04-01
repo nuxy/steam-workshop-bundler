@@ -41,14 +41,16 @@ fn main() {
     let args = Cli::parse();
 
     if args.generate {
-        create_workshop(&args.workshop);
+        let path = create_workshop(&args.workshop);
+
+        println!("Created workshop {} in: {}", &args.workshop, path);
+    } else {
+        let path = create_bundle(&args.workshop, &args.public);
+
+        if !publish(&path, &args.username, &args.password) {
+            panic!("Failed to publish Steam workshop");
+        }
+
+        println!("Success");
     }
-
-    let path = create_bundle(&args.workshop, &args.public);
-
-    if !publish(&path, &args.username, &args.password) {
-        panic!("Failed to publish Steam workshop");
-    }
-
-    println!("Success");
 }
