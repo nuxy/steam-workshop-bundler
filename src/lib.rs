@@ -105,6 +105,7 @@ pub fn create_workshop(name: &str) -> String {
 pub fn publish(build_path: &str, username: &str, password: &str) -> bool {
     if Path::new(&build_path).is_dir() {
         let cmd_bin = get_bin_path("steamcmd") + get_bin_ext();
+        let mod_vdf = &(format!("{}/mod.vdf", get_tmp_path()));
 
         Command::new(cmd_bin)
             .args(&[
@@ -112,7 +113,7 @@ pub fn publish(build_path: &str, username: &str, password: &str) -> bool {
                 &(format!("'{}'", username)),
                 &(format!("'{}'", password)),
                 "+workshop_build_item",
-                &(format!("{}/mod.vcf", build_path)),
+                mod_vdf,
                 "+quit",
             ])
             .output()
@@ -120,6 +121,7 @@ pub fn publish(build_path: &str, username: &str, password: &str) -> bool {
 
         // Cleanup build sources.
         fs::remove_dir_all(build_path).expect("Failed to remove directory");
+        fs::remove_file(mod_vdf).expect("Failed to remove file");
 
         return true;
     }
@@ -131,7 +133,7 @@ pub fn publish(build_path: &str, username: &str, password: &str) -> bool {
  * Create Steam workshop VDF reference.
  */
 fn create_vdf(build_path: &str, proj_path: &str, public: &bool) {
-    let xml_file = format!("{}/config.xml", get_cwd_path());
+    let xml_file = format!("{}/config.xml", proj_path);
     let vdf_path = format!("{}/mod.vdf", get_tmp_path());
 
     // Load config values from XML.
