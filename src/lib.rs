@@ -110,8 +110,8 @@ pub fn publish(build_path: &str, username: &str, password: &str) -> bool {
         Command::new(cmd_bin)
             .args(&[
                 "+login",
-                &(format!("'{}'", username)),
-                &(format!("'{}'", password)),
+                username,
+                password,
                 "+workshop_build_item",
                 mod_vdf,
                 "+quit",
