@@ -1,4 +1,11 @@
-// Port of https://github.com/nuxy/MiscreatedMods-DOA/blob/master/publish.sh
+//
+//  steam-workshop-bundler
+//  Manage multiple mod projects for a single game instance.
+//
+//  Copyright 2023, Marc S. Brooks (https://mbrooks.info)
+//  Licensed under the MIT license:
+//  http://www.opensource.org/licenses/mit-license.php
+//
 
 use std::env;
 
