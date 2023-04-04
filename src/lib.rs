@@ -102,7 +102,7 @@ pub fn create_workshop(name: &str) -> String {
 /**
  * Upload project sources using SteamCMD.
  */
-pub fn publish(build_path: &str, username: &str, password: &str) -> bool {
+pub fn publish(build_path: &str, username: &str, password: &str, guard_code: &str) -> bool {
     if Path::new(&build_path).is_dir() {
         let cmd_bin = get_bin_path("steamcmd") + get_bin_ext();
         let mod_vdf = &(format!("{}/mod.vdf", get_tmp_path()));
@@ -112,6 +112,7 @@ pub fn publish(build_path: &str, username: &str, password: &str) -> bool {
                 "+login",
                 username,
                 password,
+                guard_code,
                 "+workshop_build_item",
                 mod_vdf,
                 "+quit",

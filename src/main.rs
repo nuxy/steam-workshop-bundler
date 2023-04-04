@@ -22,6 +22,9 @@ struct Cli {
     #[clap(long, value_parser, help = "Steam account password.")]
     password: String,
 
+    #[clap(long, value_parser, help = "Steam Guard code.")]
+    guard_code: String,
+
     #[clap(long, value_parser, help = "Workshop name to publish.")]
     workshop: String,
 
@@ -47,7 +50,7 @@ fn main() {
     } else {
         let path = create_bundle(&args.workshop, &args.public);
 
-        if !publish(&path, &args.username, &args.password) {
+        if !publish(&path, &args.username, &args.password, &args.guard_code) {
             panic!("Failed to publish Steam workshop");
         }
 
