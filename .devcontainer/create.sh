@@ -13,8 +13,8 @@ EOF
 
 chmod 755 /usr/bin/steamcmd
 
-# Suppress ALSA lib warnings.
-mkdir /usr/games/.config/pulse
+# Disable Pulse audio in Wine.
+winetricks sound=disabled
 
 # Enable root access (Steam required).
 chown -R root:root /usr/games/.wine
