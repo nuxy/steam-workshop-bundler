@@ -41,7 +41,7 @@ Debug _*binary_ output:
 
     $ ./target/debug/steam-workshop-bundler
 
-(*) Due to `steamcmd.exe` running in a Windows context, while the underlying Dev Container OS is Linux, the generated VDF will contain invalid paths (e.g. Linux paths).  This will result with a failure during the Steam workshop publish process.  That being said, final testing occur using the target OS.
+(*) Due to `steamcmd.exe` running in a Windows context, while the underlying Dev Container OS is Linux, the generated VDF will contain invalid paths (e.g. Linux paths).  As result the Steam workshop publish process will fail with an error.  That said, final testing should take place on the target OS.
 
 ## References
 
